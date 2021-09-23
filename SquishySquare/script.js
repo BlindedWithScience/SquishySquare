@@ -24,7 +24,7 @@ onload = () => {
 
 	canvas.onmouseleave = (data) => {
 		const clientRect = canvas.getBoundingClientRect();
-		ctx.clearRect(0, 0, 1000, 1000);
+		ctx.clearRect(clientRect.x, clientRect.y, canvas.width, canvas.height);
 	};
 
 
