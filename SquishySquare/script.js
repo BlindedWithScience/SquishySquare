@@ -16,63 +16,48 @@ onload = () => {
         };
 
 
-	canvas.onmouseenter = (data) => {
-		const clientRect = canvas.getBoundingClientRect();
-		ctx.fillRect(data.clientX - clientRect.x - sqSide, data.clientY - clientRect.y - sqSide, 100, 100);
-	};
 	
-
-	canvas.onmouseleave = (data) => {
-		const clientRect = canvas.getBoundingClientRect();
-		ctx.clearRect(clientRect.x, clientRect.y, canvas.width, canvas.height);
-	};
-
 
 	canvas.onmousemove = (data) => {
 		const clientRect = canvas.getBoundingClientRect();
+
+		ctx.setTransform();
 
 		mouse.x0 = mouse.x;
 		mouse.y0 = mouse.y;
 		mouse.x = data.clientX - clientRect.x;
 		mouse.y = data.clientY - clientRect.y;
 		
-		dx = mouse.x0 - mouse.x;
-		dy = mouse.y0 - mouse.y;
-		
-		const factor = {
-			yScale: 1,
-			yPos: 1,
-			xScale: 1,
-			xPos: 1
-		}
+		let x = mouse.x;
+		let y = mouse.y;
+
+		let xScale = 1;
+		let yScale = 1;
 
 		ctx.clearRect(0, 0, 1000, 1000);
 		
-		if (canvas.width - mouse.x < sqSide) {	
-			factor.yScale = sqSide / (canvas.width - mouse.x);
-			factor.yPos = (canvas.width - mouse.x) / sqSide;
-		} else if (mouse.x < sqSide) {
-			factor.yScale = sqSide / mouse.x;
-			factor.yPos = mouse.x / sqSide;
-		};
-		
-		if (canvas.height - mouse.y < sqSide) {	
-			factor.xScale = sqSide / (canvas.height - mouse.y);
-			factor.xPos = (canvas.height - mouse.y) / sqSide;
-		} else if (mouse.y < sqSide) {
-			factor.xScale = sqSide / mouse.y;
-			factor.xPos = mouse.y / sqSide;
-		};
-		
-		if (factor.xScale != 1 && factor.yScale != 1) {
-			factor.yScale = 1;
-			factor.yPos = 1;
-			factor.xScale = 1;
-			factor.xPos = 1;
-		};
-		
 
-		ctx.setTransform(factor.xScale, 0, 0, factor.yScale, 0, 0);
-		ctx.fillRect(mouse.x * factor.xPos - sqSide, mouse.y * factor.yPos - sqSide, sqSide * 2, sqSide * 2);
+		if (canvas.width - mouse.x < sqSide) {	
+			yScale = sqSide / (canvas.width - mouse.x);
+			xScale = 1 / yScale;
+
+		} else if (mouse.x < sqSide) {
+			yScale = sqSide / mouse.x;
+			xScale = 1 / yScale;
+		} else if (canvas.height - mouse.y < sqSide) {	
+
+			xScale = sqSide / (canvas.height - mouse.y);
+			yScale = 1 / xScale;
+
+		} else if (mouse.y < sqSide) {
+
+			xScale = sqSide / mouse.y;
+			yScale = 1 / xScale;
+
+		};
+
+		ctx.setTransform(xScale, 0, 0, yScale, mouse.x, mouse.y);
+		ctx.fillRect(-sqSide, -sqSide, sqSide * 2, sqSide * 2);
 	};
 }
+
